@@ -28,7 +28,7 @@
 	[torchModeButton setVerticalPadding:6];
 	[torchModeButton updateDisplay];
 
-	[torchModeButton setSelectedItem:2];
+	[torchModeButton setSelectedItemIndex:2];
 
 	// Torch related settings
 	// Setting up flashlight for later use...
@@ -60,7 +60,7 @@
 				[self setTorchSession:session];
 			}
 
-			[torchModeButton setSelectedItem:(2 - [device torchMode])];
+			[torchModeButton setSelectedItemIndex:(2 - [device torchMode])];
         }
     }
 
@@ -86,7 +86,7 @@
 	[borderButton setHorizontalPadding:6];
 	[borderButton setUnSelectedLabelFont:[UIFont systemFontOfSize:borderButton.labelFont.pointSize]];
 	[borderButton updateDisplay];
-	[borderButton setSelectedItem:1];
+	[borderButton setSelectedItemIndex:1];
 
 	DDExpandableButton *toggleButton = [[DDExpandableButton alloc] initWithPoint:CGPointMake(20.0f, 155.0f)
 																		leftTitle:nil
@@ -108,7 +108,7 @@
 
 - (void)toggleColor:(DDExpandableButton *)sender
 {
-	switch ([sender selectedItem])
+	switch ([sender selectedItemIndex])
 	{
 		default:
 			[[[self.view viewWithTag:10] layer] setBorderColor:[UIColor blackColor].CGColor];
@@ -127,7 +127,7 @@
 
 - (void)toggleWidth:(DDExpandableButton *)sender
 {
-	switch ([sender selectedItem])
+	switch ([sender selectedItemIndex])
 	{
 		default:
 			[[[self.view viewWithTag:10] layer] setBorderWidth:2];
@@ -142,7 +142,7 @@
 }
 - (void)toggleBkgd:(DDExpandableButton *)sender
 {
-	switch ([sender selectedItem])
+	switch ([sender selectedItemIndex])
 	{
 		case 0:
 			[self.view setBackgroundColor:[UIColor grayColor]];
@@ -162,7 +162,7 @@
 		if ([device hasTorch])
 		{
 			[device lockForConfiguration:nil];
-			[device setTorchMode:(2 - [sender selectedItem])];
+			[device setTorchMode:(2 - [sender selectedItemIndex])];
 			[device unlockForConfiguration];
 		}		
 	}

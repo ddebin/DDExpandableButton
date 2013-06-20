@@ -105,7 +105,7 @@ static CGFloat const kDefaultDisabledAlpha = 0.5f;
 - (void)disableTimeout
 {
 	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(shrinkButton) object:nil];
-	self.timeout = 0;
+	self.timeout = 0.0f;
 }
 
 - (void)setLeftTitle:(id)leftTitle
@@ -122,10 +122,7 @@ static CGFloat const kDefaultDisabledAlpha = 0.5f;
 
 - (void)setButtons:(NSArray *)buttons
 {
-	for (DDView *v in self.labels)
-	{
-		[v removeFromSuperview];
-	}
+    [self.labels makeObjectsPerformSelector:@selector(removeFromSuperview)];
 	
 	NSMutableArray *updatedLabels = [NSMutableArray arrayWithCapacity:[buttons count]];
 	for (NSObject *button in buttons)
@@ -141,7 +138,7 @@ static CGFloat const kDefaultDisabledAlpha = 0.5f;
 {
 	// maxHeight update
 	self.maxWidth = 0.0f;
-	self.maxHeight = (self.leftTitleView != nil)?[self.leftTitleView defaultFrameSize].height + self.verticalPadding * 2.0f:0;
+	self.maxHeight = [self calculateMaxHeight];
 	for (DDView *v in self.labels)
 	{
 		self.maxHeight = MAX(self.maxHeight, [v defaultFrameSize].height + self.verticalPadding * 2.0f);
@@ -154,16 +151,21 @@ static CGFloat const kDefaultDisabledAlpha = 0.5f;
 		v.layer.borderWidth = self.innerBorderWidth;
 	}
 	
-	self.cornerAdditionalPadding = roundf(self.maxHeight/2.2f) - self.borderWidth - self.horizontalPadding;
+	self.cornerAdditionalPadding = roundf(self.maxHeight / 2.2f) - self.borderWidth - self.horizontalPadding;
 
 	self.leftWidth = self.cornerAdditionalPadding;
-	if (self.leftTitleView != nil) self.leftWidth += self.horizontalPadding + [self.leftTitleView defaultFrameSize].width + ((self.innerBorderWidth == 0)? self.horizontalPadding : 0);
+	if (self.leftTitleView != nil)
+    {
+        CGFloat frameWidth = [self.leftTitleView defaultFrameSize].width;
+        CGFloat additionalPadding = (self.innerBorderWidth == 0) ? self.horizontalPadding : 0.0f;        
+        self.leftWidth += self.horizontalPadding + frameWidth + additionalPadding;
+    }
 	
 	self.layer.borderWidth  = self.borderWidth;
 	self.layer.borderColor  = self.borderColor.CGColor;
-	self.layer.cornerRadius = self.maxHeight/2.0f;        
+	self.layer.cornerRadius = roundf(self.maxHeight / 2.0f);
 	
-	[self setSelectedItem:0 animated:NO];
+	[self setSelectedItemIndex:0 animated:NO];
 }
 
 
@@ -171,14 +173,19 @@ static CGFloat const kDefaultDisabledAlpha = 0.5f;
 
 - (CGRect)shrunkFrameRect
 {
+    CGPoint originPoint = self.frame.origin;
+    CGFloat x = 0.0f;
+    CGFloat y = self.maxHeight;
 	if (self.toggleMode)
-	{
-		return CGRectMake(self.frame.origin.x, self.frame.origin.y, (self.cornerAdditionalPadding + self.horizontalPadding) * 2 + self.maxWidth, self.maxHeight);
+	{        
+        x = (self.cornerAdditionalPadding + self.horizontalPadding) * 2 + self.maxWidth;
+        return (CGRect){ originPoint, { x, y } };
 	}
 	else
 	{
-		DDView *currentLabel = [self.labels objectAtIndex:self.selectedItem];
-		return CGRectMake(self.frame.origin.x, self.frame.origin.y, currentLabel.frame.origin.x + currentLabel.frame.size.width + self.cornerAdditionalPadding, self.maxHeight);
+		DDView *currentLabel = self.labels[self.selectedItemIndex];
+        x = currentLabel.frame.origin.x + currentLabel.frame.size.width + self.cornerAdditionalPadding;
+        return (CGRect){ originPoint, { x, y } };
 	}
 }
 
@@ -213,7 +220,7 @@ static CGFloat const kDefaultDisabledAlpha = 0.5f;
 - (void)setEnabled:(BOOL)enabled
 {
 	[super setEnabled:enabled];
-	self.alpha = enabled?1:kDefaultDisabledAlpha;
+	self.alpha = enabled ? 1.0f : kDefaultDisabledAlpha;
 }
 
 - (void)shrinkButton
@@ -244,7 +251,7 @@ static CGFloat const kDefaultDisabledAlpha = 0.5f;
 		CGFloat x = self.leftWidth;
         for (DDView *v in self.labels)
 		{
-            if (i != self.selectedItem)
+            if (i != self.selectedItemIndex)
 			{
 				if ([v isKindOfClass:[DDExpandableButtonCustomUILabel class]])
 				{
@@ -292,22 +299,22 @@ static CGFloat const kDefaultDisabledAlpha = 0.5f;
 			}
 			if ([v respondsToSelector:@selector(setHighlighted:)])
 			{
-				[v setHighlighted:(i == self.selectedItem)];
+				[v setHighlighted:(i == self.selectedItemIndex)];
 			}
 			
 			CGRect r = CGRectZero;
 			r.size.height = self.maxHeight;
-			if (i < self.selectedItem)
+			if (i < self.selectedItemIndex)
 			{
 				r.origin.x = self.leftWidth;
 			}
-			else if (i == self.selectedItem)
+			else if (i == self.selectedItemIndex)
 			{
 				r.size.width = [v defaultFrameSize].width + self.horizontalPadding * 2;
 				r.origin.x = self.leftWidth;
 				selectedWidth = r.size.width;
 			}
-			else if (i > self.selectedItem)
+			else if (i > self.selectedItemIndex)
 			{
 				r.origin.x = self.leftWidth + selectedWidth;
 			}
@@ -330,16 +337,16 @@ static CGFloat const kDefaultDisabledAlpha = 0.5f;
 	}
 }
 
-- (void)setSelectedItem:(NSUInteger)selected
+- (void)setSelectedItemIndex:(NSUInteger)selected
 {
-	[self setSelectedItem:selected animated:NO];
+	[self setSelectedItemIndex:selected animated:NO];
 }
 
-- (void)setSelectedItem:(NSUInteger)selected animated:(BOOL)animated
+- (void)setSelectedItemIndex:(NSUInteger)selected animated:(BOOL)animated
 {	
-	BOOL notify = (_selectedItem != selected);
+	BOOL notify = (_selectedItemIndex != selected);
 	
-	_selectedItem = selected;
+	_selectedItemIndex = selected;
 	
 	[self setExpanded:NO animated:animated];
 	
@@ -356,7 +363,7 @@ static CGFloat const kDefaultDisabledAlpha = 0.5f;
 {
 	if (self.toggleMode)
 	{
-		[self setSelectedItem:((self.selectedItem + 1) % [self.labels count])];
+		[self setSelectedItemIndex:((self.selectedItemIndex + 1) % [self.labels count])];
 	}
     else if (self.isExpanded == NO)
 	{
@@ -379,11 +386,11 @@ static CGFloat const kDefaultDisabledAlpha = 0.5f;
         
         if (inside)
 		{
-            [self setSelectedItem:i animated:self.useAnimation];
+            [self setSelectedItemIndex:i animated:self.useAnimation];
         }
 		else
 		{
-            [self setSelectedItem:self.selectedItem animated:self.useAnimation];
+            [self setSelectedItemIndex:self.selectedItemIndex animated:self.useAnimation];
 		}
     }
 }
@@ -424,5 +431,20 @@ static CGFloat const kDefaultDisabledAlpha = 0.5f;
 		return obj;
 	}
 }
+
+- (CGFloat)calculateMaxHeight
+{
+    CGFloat maxHeight = 0.0f;
+    if (self.leftTitleView != nil)
+    {
+        maxHeight = [self.leftTitleView defaultFrameSize].height + self.verticalPadding * 2.0f;
+    }
+    else
+    {
+        maxHeight = 0.0f;
+    }
+    return maxHeight;
+}
+
 
 @end

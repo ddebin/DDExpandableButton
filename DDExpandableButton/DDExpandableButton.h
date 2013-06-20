@@ -41,7 +41,7 @@
 @property (nonatomic,assign)	CGFloat 	innerBorderWidth;
 
 // Selected item number.
-@property (nonatomic,assign)	NSUInteger	selectedItem;
+@property (nonatomic,assign)	NSUInteger	selectedItemIndex;
 
 // Color of the button and inner borders.
 @property (nonatomic,strong)	UIColor		*borderColor;
@@ -60,7 +60,7 @@
 
 - (instancetype)initWithPoint:(CGPoint)point leftTitle:(id)leftTitle buttons:(NSArray *)buttons;
 
-- (void)setSelectedItem:(NSUInteger)selected animated:(BOOL)animated;
+- (void)setSelectedItemIndex:(NSUInteger)selected animated:(BOOL)animated;
 - (void)setExpanded:(BOOL)expanded animated:(BOOL)animated;
 - (void)setLeftTitle:(id)leftTitle;
 - (void)setButtons:(NSArray *)buttons;
