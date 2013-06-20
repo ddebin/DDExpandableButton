@@ -89,10 +89,9 @@ static CGFloat const kDefaultDisabledAlpha = 0.5f;
 	return self;
 }
 
-- (id)initWithPoint:(CGPoint)point leftTitle:(id)leftTitle buttons:(NSArray *)buttons
+- (instancetype)initWithPoint:(CGPoint)point leftTitle:(id)leftTitle buttons:(NSArray *)buttons
 {
-	self = [self initWithFrame:CGRectMake(point.x, point.y, 0, 0)];
-    if (self != nil)
+    if ((self = [self initWithFrame:CGRectMake(point.x, point.y, 0, 0)]))
 	{
 		[self setLeftTitle:leftTitle];
 		[self setButtons:buttons];
