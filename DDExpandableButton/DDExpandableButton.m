@@ -44,7 +44,7 @@
 #pragma mark DDExpandableButton Class
 
 @interface DDExpandableButton ()
-
+@property (nonatomic,strong) NSArray *labels;
 @property (nonatomic, assign) CGFloat cornerAdditionalPadding;
 @property (nonatomic, assign) CGFloat leftWidth;
 @property (nonatomic, assign) CGFloat maxHeight;
@@ -78,7 +78,7 @@ static CGFloat const kDefaultDisabledAlpha = 0.5f;
 		[self addTarget:self action:@selector(chooseLabel:forEvent:) forControlEvents:UIControlEventTouchUpInside];
 		
 		self.borderColor = [UIColor colorWithWhite:0.0f alpha:1.0f];
-		self.textColor = _borderColor;
+		self.textColor = self.borderColor;
 		self.labelFont = [UIFont boldSystemFontOfSize:14.0f];
 		self.unSelectedLabelFont = nil;
 		
@@ -122,6 +122,7 @@ static CGFloat const kDefaultDisabledAlpha = 0.5f;
 
 - (void)setButtons:(NSArray *)buttons
 {
+    // Remove all existing labels.
     [self.labels makeObjectsPerformSelector:@selector(removeFromSuperview)];
 	
 	NSMutableArray *updatedLabels = [NSMutableArray arrayWithCapacity:[buttons count]];
@@ -131,7 +132,7 @@ static CGFloat const kDefaultDisabledAlpha = 0.5f;
 		[self addSubview:v];
 		[updatedLabels addObject:v];
 	}
-	_labels = updatedLabels;
+	self.labels = updatedLabels;
 }
 
 - (void)updateDisplay
