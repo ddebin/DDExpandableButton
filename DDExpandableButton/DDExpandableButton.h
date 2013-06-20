@@ -3,8 +3,8 @@
 //  https://github.com/ddebin/DDExpandableButton
 //
 
-#ifndef __IPHONE_3_0
-#warning "This project uses features only available in iOS SDK 3.0 and later."
+#ifndef __IPHONE_6_0
+#warning "This project uses features only available in iOS SDK 6.0 and later."
 #endif
 
 #import <UIKit/UIKit.h>
@@ -15,31 +15,9 @@
 @protocol DDExpandableButtonViewSource;
 
 @interface DDExpandableButton : UIControl
-{
-	BOOL		expanded;
-	BOOL		useAnimation;
-	BOOL		toggleMode;
-	CGFloat		timeout;
-	CGFloat 	horizontalPadding;
-	CGFloat 	verticalPadding;
-	CGFloat 	borderWidth;
-	CGFloat 	innerBorderWidth;
-    NSUInteger	selectedItem;
-	UIColor		*borderColor;
-	UIColor 	*textColor;
-	UIFont  	*labelFont;
-	UIFont  	*unSelectedLabelFont;
-	
-	CGFloat		cornerAdditionalPadding;
-	CGFloat 	leftWidth;
-	CGFloat 	maxHeight;
-	CGFloat 	maxWidth;
-    NSArray 	*labels;
-	DDView		*leftTitleView;
-}
 
 // Current button status (if expanded or shrunk).
-@property (nonatomic,assign)	BOOL		expanded;
+@property (nonatomic,assign,getter=isExpanded)	BOOL		expanded;
 
 // Use animation during button state stransitions.
 @property (nonatomic,assign)	BOOL		useAnimation;
@@ -66,21 +44,21 @@
 @property (nonatomic,assign)	NSUInteger	selectedItem;
 
 // Color of the button and inner borders.
-@property (nonatomic,retain)	UIColor		*borderColor;
+@property (nonatomic,strong)	UIColor		*borderColor;
 
 // Color of text labels.
-@property (nonatomic,retain)	UIColor		*textColor;
+@property (nonatomic,strong)	UIColor		*textColor;
 
 // Font of text labels.
-@property (nonatomic,retain)	UIFont		*labelFont;
+@property (nonatomic,strong)	UIFont		*labelFont;
 
 // Font of unselected text labels. Nil if not different from labelFont.
-@property (nonatomic,retain)	UIFont		*unSelectedLabelFont;
+@property (nonatomic,strong)	UIFont		*unSelectedLabelFont;
 
 // Access UIView used to draw labels.
-@property (nonatomic,readonly)	NSArray 	*labels;
+@property (nonatomic,strong,readonly)	NSArray 	*labels;
 
-- (id)initWithPoint:(CGPoint)point leftTitle:(id)leftTitle buttons:(NSArray *)buttons;
+- (instancetype)initWithPoint:(CGPoint)point leftTitle:(id)leftTitle buttons:(NSArray *)buttons;
 
 - (void)setSelectedItem:(NSUInteger)selected animated:(BOOL)animated;
 - (void)setExpanded:(BOOL)expanded animated:(BOOL)animated;

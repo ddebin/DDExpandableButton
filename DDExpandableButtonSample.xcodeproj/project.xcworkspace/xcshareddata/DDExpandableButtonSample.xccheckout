@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>10A69DB5-940B-4B1D-9957-F3C525F6EFD7</string>
+	<key>IDESourceControlProjectName</key>
+	<string>DDExpandableButtonSample</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>1F6F4A0A-DD3E-4845-A70B-E11E038836D5</key>
+		<string>ssh://github.com/justin/DDExpandableButton.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>DDExpandableButtonSample.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>1F6F4A0A-DD3E-4845-A70B-E11E038836D5</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://github.com/justin/DDExpandableButton.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>1F6F4A0A-DD3E-4845-A70B-E11E038836D5</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>1F6F4A0A-DD3E-4845-A70B-E11E038836D5</string>
+			<key>IDESourceControlWCCName</key>
+			<string>DDExpandableButton</string>
+		</dict>
+	</array>
+</dict>
+</plist>

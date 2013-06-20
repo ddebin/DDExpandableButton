@@ -8,14 +8,6 @@
 
 @implementation SampleViewController
 
-@synthesize torchSession;
-
-- (void)dealloc
-{
-	[torchSession release];
-    [super dealloc];
-}
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -28,9 +20,9 @@
 {
     [super viewDidLoad];
 		
-	DDExpandableButton *torchModeButton = [[[DDExpandableButton alloc] initWithPoint:CGPointMake(20.0f, 20.0f)
+	DDExpandableButton *torchModeButton = [[DDExpandableButton alloc] initWithPoint:CGPointMake(20.0f, 20.0f)
 																		   leftTitle:[UIImage imageNamed:@"Flash.png"]
-																			 buttons:[NSArray arrayWithObjects:@"Auto", @"On", @"Off", nil]] autorelease];
+																			 buttons:[NSArray arrayWithObjects:@"Auto", @"On", @"Off", nil]];
 	[[self view] addSubview:torchModeButton];
 	[torchModeButton addTarget:self action:@selector(toggleFlashlight:) forControlEvents:UIControlEventValueChanged];
 	[torchModeButton setVerticalPadding:6];
@@ -62,13 +54,10 @@
 				
                 [device unlockForConfiguration];
 				
-                [output release];
-				
 				[session commitConfiguration];
 				[session startRunning];
 				
 				[self setTorchSession:session];
-				[session release];
 			}
 
 			[torchModeButton setSelectedItem:(2 - [device torchMode])];
@@ -77,9 +66,9 @@
 
 	[[[self.view viewWithTag:10] layer] setBorderColor:[UIColor blackColor].CGColor];
 
-	DDExpandableButton *colorButton = [[[DDExpandableButton alloc] initWithPoint:CGPointMake(20.0f, 65.0f)
+	DDExpandableButton *colorButton = [[DDExpandableButton alloc] initWithPoint:CGPointMake(20.0f, 65.0f)
 																	   leftTitle:@"Color"
-																		 buttons:[NSArray arrayWithObjects:@"Black", @"Red", @"Green", @"Blue", nil]] autorelease];
+																		 buttons:[NSArray arrayWithObjects:@"Black", @"Red", @"Green", @"Blue", nil]];
 	[[self view] addSubview:colorButton];
 	[colorButton addTarget:self action:@selector(toggleColor:) forControlEvents:UIControlEventValueChanged];
 
@@ -88,9 +77,9 @@
 	[[colorButton.labels objectAtIndex:2] setHighlightedTextColor:[UIColor greenColor]];
 	[[colorButton.labels objectAtIndex:3] setHighlightedTextColor:[UIColor blueColor]];
 	
-	DDExpandableButton *borderButton = [[[DDExpandableButton alloc] initWithPoint:CGPointMake(20.0f, 110.0f)
+	DDExpandableButton *borderButton = [[DDExpandableButton alloc] initWithPoint:CGPointMake(20.0f, 110.0f)
 																		leftTitle:@"Border"
-																		  buttons:[NSArray arrayWithObjects:@"Thin", @"Medium", @"Thick", nil]] autorelease];
+																		  buttons:[NSArray arrayWithObjects:@"Thin", @"Medium", @"Thick", nil]];
 	[[self view] addSubview:borderButton];
 	[borderButton addTarget:self action:@selector(toggleWidth:) forControlEvents:UIControlEventValueChanged];
 	[borderButton setInnerBorderWidth:0];
@@ -99,9 +88,9 @@
 	[borderButton updateDisplay];
 	[borderButton setSelectedItem:1];
 
-	DDExpandableButton *toggleButton = [[[DDExpandableButton alloc] initWithPoint:CGPointMake(20.0f, 155.0f)
+	DDExpandableButton *toggleButton = [[DDExpandableButton alloc] initWithPoint:CGPointMake(20.0f, 155.0f)
 																		leftTitle:nil
-																		  buttons:[NSArray arrayWithObjects:@"HDR On", @"HDR Off", nil]] autorelease];
+																		  buttons:[NSArray arrayWithObjects:@"HDR On", @"HDR Off", nil]];
 	[[self view] addSubview:toggleButton];
 	[toggleButton addTarget:self action:@selector(toggleBkgd:) forControlEvents:UIControlEventValueChanged];
 	[toggleButton setToggleMode:YES];
