@@ -407,7 +407,7 @@ static CGFloat const kDefaultDisabledAlpha = 0.5f;
 		v.font = self.labelFont;
         v.textColor = self.textColor;
         v.backgroundColor = [UIColor clearColor];
-		v.textAlignment = UITextAlignmentCenter;
+		v.textAlignment = NSTextAlignmentCenter;
 		v.opaque = YES;
 		v.text = obj;
 		return v;
