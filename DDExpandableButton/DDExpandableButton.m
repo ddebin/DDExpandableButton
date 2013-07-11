@@ -103,6 +103,7 @@
 @synthesize borderWidth;
 @synthesize innerBorderWidth;
 @synthesize labels;
+@synthesize backgroundView;
 
 
 #pragma mark Default Values
@@ -140,6 +141,10 @@
 		verticalPadding = DEFAULT_VERT_PADDING;
 		timeout = DEFAULT_TIMEOUT;
 
+		backgroundView = [[UIView alloc] init];
+		[backgroundView setUserInteractionEnabled:NO];
+		[self addSubview:backgroundView];
+		
 		[self addTarget:self action:@selector(chooseLabel:forEvent:) forControlEvents:UIControlEventTouchUpInside];
 
 		self.borderColor = [UIColor colorWithWhite:DEFAULT_BORDER_WHITE alpha:DEFAULT_BORDER_ALPHA];
@@ -222,6 +227,15 @@
 		[_labels addObject:v];
 	}
 	labels = [_labels ah_retain];
+
+	[self setExpandedFrame];
+}
+
+- (void) setToggleMode:(BOOL)_toggleMode
+{
+	toggleMode = _toggleMode;
+
+	[self setExpandedFrame];
 }
 
 - (void)updateDisplay
@@ -251,49 +265,37 @@
 	self.layer.cornerRadius = roundf(maxHeight / 2.0f);
 
 	[self setSelectedItem:0 animated:NO];
+	
+	[self setExpandedFrame];
 }
 
-
-#pragma mark Frame Rect Methods
-
-- (CGRect)shrunkFrameRect
+- (void)setExpandedFrame
 {
+	// Save and reset the transform to perform frame calculations correctly
+	CGAffineTransform transform = [self transform];
+	[self setTransform:CGAffineTransformIdentity];
+	
+	// Set the frame of the control to the maximum expanded size
 	if (toggleMode)
 	{
-		return CGRectMake(self.frame.origin.x, self.frame.origin.y, (cornerAdditionalPadding + horizontalPadding) * 2 + maxWidth, maxHeight);
+		[self setFrame:CGRectMake(self.frame.origin.x, self.frame.origin.y, (cornerAdditionalPadding + horizontalPadding) * 2 + maxWidth, maxHeight)];
 	}
 	else
 	{
-		DDView *currentLabel = [labels objectAtIndex:selectedItem];
-		return CGRectMake(self.frame.origin.x, self.frame.origin.y, currentLabel.frame.origin.x + currentLabel.frame.size.width + cornerAdditionalPadding, maxHeight);
+		CGFloat x = leftWidth;
+		CGFloat width = 0.0f;
+		for (DDView *v in labels)
+		{
+			CGRect labelRect = CGRectMake(x, 0, [v defaultFrameSize].width + horizontalPadding * 2, maxHeight);
+			width = x + labelRect.size.width;
+			x += labelRect.size.width - v.layer.borderWidth;
+		}
+		[self setFrame:CGRectMake(self.frame.origin.x, self.frame.origin.y, width, maxHeight)];
 	}
+	
+	// Restore the transform
+	[self setTransform:transform];
 }
-
-- (CGRect)expandedFrameRect
-{
-	if (toggleMode)
-	{
-		return [self shrunkFrameRect];
-	}
-	else
-	{
-		DDView *lastLabel = [labels lastObject];
-		return CGRectMake(self.frame.origin.x, self.frame.origin.y, lastLabel.frame.origin.x + lastLabel.frame.size.width + cornerAdditionalPadding, maxHeight);
-	}
-}
-
-- (CGRect)currentFrameRect
-{
-	if (expanded)
-	{
-		return [self expandedFrameRect];
-	}
-	else
-	{
-		return [self shrunkFrameRect];
-	}
-}
-
 
 #pragma mark Animation Methods
 
@@ -408,12 +410,23 @@
 			i++;
 		}
 	}
-
+	
+	// Set the frame of the background view
+	CGRect bounds = [self bounds];
+	CGRect backgroundRect;
+	if (expanded || toggleMode)
+	{
+		backgroundRect = bounds;
+	}
+	else
+	{
+		DDView *currentLabel = [labels objectAtIndex:selectedItem];
+		backgroundRect = CGRectMake(0.0f, 0.0f, currentLabel.frame.origin.x + currentLabel.frame.size.width + cornerAdditionalPadding, maxHeight);
+	}
+	[backgroundView setFrame:backgroundRect];
+	
 	// set title frames
 	leftTitleView.frame = CGRectMake(cornerAdditionalPadding + horizontalPadding, 0, [leftTitleView defaultFrameSize].width, maxHeight);
-
-	// set whole frame
-	[self setFrame:[self currentFrameRect]];
 
 	if (animated)
 	{
@@ -445,6 +458,12 @@
 
 - (void)chooseLabel:(id)sender forEvent:(UIEvent *)event
 {
+	// Ignore touches that are outside of the visible background view
+	if (![backgroundView pointInside:[[[event allTouches] anyObject] locationInView:backgroundView] withEvent:event])
+	{
+		return;
+	}
+	
 	if (toggleMode)
 	{
 		[self setSelectedItem:((selectedItem + 1) % [labels count])];
@@ -479,6 +498,39 @@
 	}
 }
 
+#pragma mark Accessors Proxy Methods
+
+- (void)setBackgroundColor:(UIColor *)backgroundColor
+{
+	[backgroundView setBackgroundColor:backgroundColor];
+}
+- (UIColor *)backgroundColor
+{
+	return [backgroundView backgroundColor];
+}
+
+- (void)setAlpha:(CGFloat)alpha
+{
+	[backgroundView setAlpha:alpha];
+}
+- (CGFloat)alpha
+{
+	return [backgroundView alpha];
+}
+
+- (void)setOpaque:(BOOL)opaque
+{
+	[backgroundView setOpaque:opaque];
+}
+- (BOOL)isOpaque
+{
+	return [backgroundView isOpaque];
+}
+
+- (CALayer *)layer
+{
+	return [backgroundView layer];
+}
 
 #pragma mark Utilities
 
