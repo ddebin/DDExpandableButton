@@ -118,3 +118,7 @@ DDExpandableButton is available under the MIT license. See the LICENSE file for 
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/ddebin/ddexpandablebutton/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/ddebin/ddexpandablebutton/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
