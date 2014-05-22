@@ -36,6 +36,7 @@
 	CGFloat		maxWidth;
 	NSArray		*labels;
 	DDView		*leftTitleView;
+	UIView		*backgroundView;
 }
 
 // Current button status (if expanded or shrunk).
@@ -80,6 +81,9 @@
 // Access UIView used to draw labels.
 @property (nonatomic,readonly)	NSArray		*labels;
 
+// Access the UIView that is the background which is transparent/white by default. Customize this view to customize the appearance.
+@property (nonatomic,retain)	UIView		*backgroundView;
+
 - (id)initWithPoint:(CGPoint)point leftTitle:(id)leftTitle buttons:(NSArray *)buttons;
 
 - (void)setSelectedItem:(NSUInteger)selected animated:(BOOL)animated;
@@ -89,6 +93,7 @@
 
 - (void)disableTimeout;
 - (void)updateDisplay;
+- (void)setExpandedFrame;
 
 @end
 
